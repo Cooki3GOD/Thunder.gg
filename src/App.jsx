@@ -64,6 +64,7 @@ const App = () => {
           <h3>Summoner Details:</h3>
           <p><strong>Name:</strong> {summonerName}</p>
           <p><strong>Level:</strong> {summonerData.summonerLevel}</p>
+          <p><img src={`https://ddragon.leagueoflegends.com/cdn/11.14.1/img/profileicon/${summonerData.profileIconId}.png`} alt="icon" /></p>
         </div>
       )}
     </div>
