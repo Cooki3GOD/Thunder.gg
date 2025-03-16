@@ -42,29 +42,33 @@ const App = () => {
 
   return (
     <div className="container">
-      <h2>League of Legends Summoner Search</h2>
-      <input
-        type="text"
-        placeholder="Enter Summoner Name"
-        value={summonerName}
-        onChange={(e) => setSummonerName(e.target.value)}
-      />
-      <input
-        type="text"
-        placeholder="Enter Summoner Tag"
-        value={summonerTag}
-        onChange={(e) => setSummonerTag(e.target.value)}
-      />
-      <button onClick={fetchSummonerData}>Search Summoner</button>
+      <div className="summonerSearch">
+        <h2>Thunder<span>.GG</span></h2>
+        <input
+          type="text"
+          placeholder="Game Name (Summoner Name)"
+          value={summonerName}
+          onChange={(e) => setSummonerName(e.target.value)}
+          id="summonerName"
+        />
+        
+        <input
+          type="text"
+          placeholder="Enter Summoner Tag"
+          value={summonerTag}
+          onChange={(e) => setSummonerTag(e.target.value)}
+          id="summonerTag"
+        />
+        <button onClick={fetchSummonerData}>.GG</button>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+        {error && <p style={{ color: "red" }} id="erorBox">{error}</p>}
+      </div>
 
       {summonerData && (
-        <div>
-          <h3>Summoner Details:</h3>
-          <p><strong>Name:</strong> {summonerName}</p>
-          <p><strong>Level:</strong> {summonerData.summonerLevel}</p>
+        <div className="summoner-details">
           <p><img src={`https://ddragon.leagueoflegends.com/cdn/11.14.1/img/profileicon/${summonerData.profileIconId}.png`} alt="icon" /></p>
+          <p><strong>Name:</strong> {summonerName + "#" + summonerTag}</p>
+          <p><strong>Level:</strong> {summonerData.summonerLevel}</p>
         </div>
       )}
     </div>
