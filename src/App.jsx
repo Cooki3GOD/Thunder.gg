@@ -1,31 +1,14 @@
 import React, { useState } from "react";
 
-const API_KEY = import.meta.env.VITE_API_KEY; 
+const API_KEY = import.meta.env.VITE_API_KEY;
 
 const App = () => {
   const [summonerName, setSummonerName] = useState("");
   const [summonerTag, setSummonerTag] = useState("");
   const [summonerData, setSummonerData] = useState(null);
   const [error, setError] = useState(null);
-  const regions = [
-    'br1.api.riotgames.com',
-    'eun1.api.riotgames.com',
-    'euw1.api.riotgames.com',
-    'jp1.api.riotgames.com',
-    'kr.api.riotgames.com', 
-    'la1.api.riotgames.com',
-    'la2.api.riotgames.com',
-    'na1.api.riotgames.com',
-    'oc1.api.riotgames.com',
-    'tr1.api.riotgames.com',
-    'ru.api.riotgames.com',
-    'ph2.api.riotgames.com',
-    'sg2.api.riotgames.com',
-    'th2.api.riotgames.com',
-    'tw2.api.riotgames.com',
-    'vn2.api.riotgames.com',
-  ]
-
+  const [region, setRegion] = useState("na1"); // Default to NA
+  const latestVersion = "14.5.1"; // Replace with the latest version from Riot API
   const fetchSummonerData = async () => {
     if (!summonerName || !summonerTag) {
       setError("Please enter both Summoner Name and Tag.");
@@ -45,7 +28,8 @@ const App = () => {
       console.log("Account Data:", accountData);
       const summonerPuuid = accountData.puuid;
 
-      const summonerUrl = `https://eun1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/${summonerPuuid}?api_key=${API_KEY}`;
+      // ✅ Use selected region in the API call
+      const summonerUrl = `https://${region}.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/${summonerPuuid}?api_key=${API_KEY}`;
       const summonerResponse = await fetch(summonerUrl);
       if (!summonerResponse.ok) throw new Error(`HTTP Error: ${summonerResponse.status}`);
       const summonerInfo = await summonerResponse.json();
@@ -60,12 +44,12 @@ const App = () => {
 
   return (
     <div className="container w-screen">
-      <div className="summonerSearch flex flex-col justify-center w">
-        <h2 className=" text-center">Thunder<span>.GG</span></h2>
+      <div className="summonerSearch flex flex-col justify-center">
+        <h2 className="text-center">Thunder<span>.GG</span></h2>
         <div className="inputContainer text-center flex justify-center">
         
-          <select name="region" id="region" className=" ml-3 mr-2 p-3">
-            
+          {/* ✅ Update region on selection */}
+          <select name="region" className="ml-3 mr-2 p-3" onChange={(e) => setRegion(e.target.value)} value={region}>
             <option value="br1">BR</option>
             <option value="eun1">EUNE</option>
             <option value="euw1">EUW</option>
@@ -82,7 +66,6 @@ const App = () => {
             <option value="th2">TH</option>
             <option value="tw2">TW</option>
             <option value="vn2">VN</option>
-
           </select>
 
           <input
@@ -90,7 +73,6 @@ const App = () => {
             placeholder="Game Name (Summoner Name)"
             value={summonerName}
             onChange={(e) => setSummonerName(e.target.value)}
-            id="summonerName"
             className="mr-2 p-3"
           />
           
@@ -99,20 +81,18 @@ const App = () => {
             placeholder="Enter Summoner Tag"
             value={summonerTag}
             onChange={(e) => setSummonerTag(e.target.value)}
-            id="summonerTag"
-            className=" p-3"
+            className="p-3"
           />
 
-
-          <button class="btn btn-ghost p-3" onClick={fetchSummonerData}>.GG</button>
+          <button className="btn btn-ghost p-3" onClick={fetchSummonerData}>.GG</button>
         </div>
 
-        {error && <p style={{ color: "red" }} id="errorBox">{error}</p>}
+        {error && <p style={{ color: "red" }}>{error}</p>}
       </div>
 
       {summonerData && (
         <div className="summoner-details">
-          <p><img src={`https://ddragon.leagueoflegends.com/cdn/11.14.1/img/profileicon/${summonerData.profileIconId}.png`} alt="icon" /></p>
+            <p><img src={`https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/profileicon/${summonerData.profileIconId}.png`} alt="icon" onError={(e) => e.target.src = "/fallback-icon.png"} /></p>
           <p><strong>Name:</strong> {summonerName + "#" + summonerTag}</p>
           <p><strong>Level:</strong> {summonerData.summonerLevel}</p>
         </div>
